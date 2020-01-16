@@ -22,7 +22,7 @@ server.get('/', (req, res) => {
   res.send('Hello from the server :)')
 });
 
-//GET(all)
+//GET(all users)
 server.get('/api/users', (req, res) => {
   db.find()
     .then(users => {
@@ -46,7 +46,7 @@ res.status(000).json({
 on returns that have more than one object.
 */
 
-//GET(specific)
+//GET(specific user by id)
 server.get('/api/users/:id', (req, res) => {
   const {id} = req.params;
 
@@ -69,7 +69,7 @@ server.get('/api/users/:id', (req, res) => {
     });
 });
 
-//POST
+//POST(create new user)
 server.post('/api/users', (req, res) => {
   const newUser = req.body;
   db.insert(newUser)
@@ -93,7 +93,7 @@ server.post('/api/users', (req, res) => {
     });
 });
 
-//PUT
+//PUT(edit existing user)
 server.put('/api/users/:id', (req, res) => {
   const { id } = req.params;
   const edits = req.body;
@@ -123,4 +123,26 @@ server.put('/api/users/:id', (req, res) => {
 })
 //!This is doing the same thing where it's still pushing the changes to the array if it fails the requirements and gets an error. Test method on POST operation...then repeat here when successful.
 
-//DELETE
+//DELETE(DESTROY user >:D)
+server.delete('/api/users/:id', (req, res) => {
+  const { id } = req.params;
+
+  db.remove(id)
+    .then(removed => {
+      if(removed) {
+        res.status(204).end();
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "The user with the specified ID does not exist."
+        })
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        err,
+        errorMessage: "The user could not be removed.",
+      });
+    });
+});
