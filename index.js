@@ -14,6 +14,7 @@ server.listen(port, () => {
 //*GLOBAL MIDDLEWARE:
 
 server.use(express.json());
+server.use(cors());
 
 //*ENDPOINTS:
 
