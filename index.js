@@ -62,17 +62,29 @@ server.get('/api/users/:id', (req, res) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ errorMessage: 'The user information could not be retrieved.' });
+      res.status(500).json({ 
+        errorMessage: 'The user information could not be retrieved.', 
+        err 
+      });
     });
 });
 
 //POST
 server.post('/api/users', (req, res) => {
-  const userInfo = req.body;
-  db.insert(userInfo)
+  const newUser = req.body;
+  db.insert(newUser)
     .then(user => {
-      res.status(201).json({ success: true, user })
+      console.log(newUser);
+      if(newUser.name && newUser.bio){
+        res.status(201).json(user);
+      } else {
+        res.status(400).json({
+          errorMessage: "Please provide name AND bio for the user."
+        });
+      }
     })
+    //!this is still adding the users even if the error message shows...What if you try the if statement FIRST since it pushes the user no matter what...if(newUser.name && newUser.bio) {db.insert(newUser)...}
+    //since the user is defined in the body and not the function...this might work???
     .catch(err => {
       res.status(500).json({ 
         errorMessage: "There was an error while saving the user to the database",
@@ -82,6 +94,6 @@ server.post('/api/users', (req, res) => {
 });
 
 //PUT
-
+server.put('/api/users/:id')
 
 //DELETE
